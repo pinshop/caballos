@@ -1273,35 +1273,7 @@
             updateRacePositions();
         });
 
-        // CONTADOR GLOBAL AUTOMATICO DE 15 MINUTOS Y PODIO
-        let globalTimerInterval = null;
-        let globalTimerSeconds = 900; // 15 minutos por defecto
 
-        function iniciarTemporizadorGlobal() {
-            if (globalTimerInterval) clearInterval(globalTimerInterval);
-            globalTimerSeconds = 900;
-
-            let $timerDiv = $("#globalAutoTimer");
-            if ($timerDiv.length === 0) {
-                // UI del timer global
-                $timerDiv = $('<div id="globalAutoTimer" class="custom-timer draggable-item" style="cursor: move; box-shadow: 0 0 20px #FFD700; border: 3px solid white; z-index: 50; text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000;"></div>');
-                $("body").append($timerDiv);
-                $timerDiv.draggable();
-                $timerDiv.css({ bottom: '2%', top: 'auto', left: '50%', transform: 'translateX(-50%)', fontSize: '3.5vh', padding: '5px 15px' });
-            }
-            $timerDiv.text(formatTime(globalTimerSeconds));
-
-            globalTimerInterval = setInterval(() => {
-                globalTimerSeconds--;
-                if (globalTimerSeconds <= 0) {
-                    clearInterval(globalTimerInterval);
-                    $timerDiv.text("00:00");
-                    mostrarPodio();
-                } else {
-                    $timerDiv.text(formatTime(globalTimerSeconds));
-                }
-            }, 1000);
-        }
 
         // CONTADORES CUSTOMIZADOS
         function formatTime(totalSec) {
@@ -1410,7 +1382,6 @@
                     $(this).remove();
                     $(".flag-item .counter").text("0");
                     checkLeader();
-                    iniciarTemporizadorGlobal(); // Reinicia auto-contador
                 });
             }, 10000);
         }
@@ -1586,8 +1557,6 @@
 
         // Auto-conectar y Modo Transparente (si viene por URL)
         $(document).ready(() => {
-            iniciarTemporizadorGlobal(); // Iniciar contador automáticamente
-
             const urlParams = new URLSearchParams(window.location.search);
             const isOverlay = urlParams.get('overlay');
             const autoUser = urlParams.get('user');
@@ -1610,8 +1579,6 @@
         // TECLAS DE PRUEBA
         document.addEventListener("keydown", e => {
             if (e.key === "w" || e.key === "W") {
-                if (globalTimerInterval) clearInterval(globalTimerInterval);
-                $("#globalAutoTimer").text("00:00");
                 mostrarPodio();
             }
             if (e.key >= "1" && e.key <= "9") {
